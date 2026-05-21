@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects | Nshemerirwe Allen</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* Projects-page extras */
+    .projects-hero {
+      padding: 10rem 0 5rem;
+      background: var(--navy-mid);
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .projects-hero::before {
+      content: '';
+      position: absolute; bottom: -1px; left: 0; right: 0; height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--navy));
+    }
+    .projects-hero .container { position: relative; }
+    .projects-hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    /* Filter Tabs */
+    .filter-tabs {
+      display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 3rem;
+    }
+    .filter-btn {
+      padding: 0.5rem 1.3rem;
+      border: 1px solid var(--border);
+      border-radius: 100px; background: transparent;
+      color: var(--gray); font-size: 0.82rem; font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; transition: all var(--transition);
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--gold); color: var(--navy); border-color: var(--gold);
+    }
+
+    /* Projects Grid */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem; margin-bottom: 5rem;
+    }
+    .project-card {
+      background: var(--navy-mid);
+      border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      cursor: pointer;
+    }
+    .project-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.35), 0 0 0 1px var(--gold);
+      border-color: var(--gold);
+    }
+    .card-top {
+      height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem; position: relative; overflow: hidden;
+    }
+    .card-top::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.12), transparent);
+    }
+    .card-top.blue  { background: linear-gradient(135deg, #0b2a4a, #112240); }
+    .card-top.teal  { background: linear-gradient(135deg, #0a2a2a, #0d3b3b); }
+    .card-top.purple{ background: linear-gradient(135deg, #1a0a2e, #2d0a5e); }
+    .card-top.green { background: linear-gradient(135deg, #0a2a18, #0d3b22); }
+    .card-top.red   { background: linear-gradient(135deg, #2a0a0a, #3b1010); }
+    .card-top.amber { background: linear-gradient(135deg, #2a1a0a, #3b2a0d); }
+
+    .card-body { padding: 1.8rem; }
+    .card-meta { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .card-type {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 0.28rem 0.75rem; border-radius: 100px;
+      background: rgba(201,168,76,0.12); border: 1px solid var(--border);
+      color: var(--gold);
+    }
+    .card-year { font-size: 0.72rem; color: var(--gray); margin-left: auto; padding-top: 0.3rem; }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem; font-weight: 700; margin-bottom: 0.7rem;
+    }
+    .card-desc { font-size: 0.88rem; color: var(--gray); line-height: 1.65; margin-bottom: 1.4rem; }
+    .card-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.4rem; }
+    .stack-pill {
+      font-size: 0.72rem; padding: 0.25rem 0.65rem; border-radius: 6px;
+      background: rgba(255,255,255,0.05); color: var(--gray); border: 1px solid rgba(255,255,255,0.07);
+    }
+    .card-links { display: flex; gap: 0.8rem; }
+    .card-link {
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.07em;
+      padding: 0.45rem 1.1rem; border-radius: 7px;
+      border: 1px solid var(--border); color: var(--gray);
+      transition: all var(--transition);
+    }
+    .card-link:hover { border-color: var(--gold); color: var(--gold); }
+    .card-link.primary { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+    .card-link.primary:hover { background: var(--gold-light); }
+
+    /* Hidden card (filter) */
+    .project-card.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">N<span class="gold">A</span></div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#home"    class="nav-link">Home</a></li>
+      <li><a href="index.html#about"   class="nav-link">About</a></li>
+      <li><a href="index.html#skills"  class="nav-link">Skills</a></li>
+      <li><a href="projects.html"      class="nav-link active">Projects</a></li>
+      <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- PROJECTS HERO -->
+  <div class="projects-hero">
+    <div class="projects-hero-grid"></div>
+    <div class="container">
+      <div class="section-label animate-up"><span class="gold">Portfolio</span> · All Projects</div>
+      <h1 class="hero-name animate-up delay-1" style="font-size:clamp(2.5rem,6vw,4.5rem)">
+        What I've<br/><span class="gold">built</span>
+      </h1>
+      <p class="hero-sub animate-up delay-2">A collection of projects spanning web development, systems design, and intelligent applications.</p>
+    </div>
+  </div>
+
+  <!-- PROJECTS SECTION -->
+  <section class="section">
+    <div class="container">
+
+      <!-- Filter Tabs -->
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="web">Web Apps</button>
+        <button class="filter-btn" data-filter="backend">Backend</button>
+        <button class="filter-btn" data-filter="systems">Systems</button>
+        <button class="filter-btn" data-filter="database">Database</button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="projects-grid" id="projectsGrid">
+
+        <!-- Project 1 -->
+        <div class="project-card fade-in" data-category="web backend">
+          <div class="card-top blue">🎓</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-type">Web App</span>
+              <span class="card-type">Backend</span>
+              <span class="card-year">2025</span>
+            </div>
+            <h3 class="card-title">ILES — Internship Logging &amp; Evaluation System</h3>
+            <p class="card-desc">A full-stack platform for managing student internship logbooks, supervisor evaluations, and weighted score computation with role-based access control.</p>
+            <div class="card-stack">
+              <span class="stack-pill">Django</span>
+              <span class="stack-pill">React</span>
+              <span class="stack-pill">PostgreSQL</span>
+              <span class="stack-pill">JWT</span>
+              <span class="stack-pill">Recharts</span>
+              <span class="stack-pill">Render</span>
+            </div>
+            <div class="card-links">
+              <a href="#" class="card-link primary">Live Demo</a>
+              <a href="#" class="card-link">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-card fade-in" data-category="web backend">
+          <div class="card-top teal">🐛</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-type">Web App</span>
+              <span class="card-type">Backend</span>
+              <span class="card-year">2025</span>
+            </div>
+            <h3 class="card-title">AITS — Academic Issue Tracking System</h3>
+            <p class="card-desc">A Django REST Framework + React system for tracking academic complaints and issues, featuring email/SMS notifications, dashboards, and role-specific views.</p>
+            <div class="card-stack">
+              <span class="stack-pill">DRF</span>
+              <span class="stack-pill">React</span>
+              <span class="stack-pill">Twilio</span>
+              <span class="stack-pill">Django Signals</span>
+              <span class="stack-pill">JWT</span>
+            </div>
+            <div class="card-links">
+              <a href="#" class="card-link primary">Live Demo</a>
+              <a href="#" class="card-link">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-card fade-in" data-category="database">
+          <div class="card-top amber">🏢</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-type">Database</span>
+              <span class="card-year">2025</span>
+            </div>
+            <h3 class="card-title">Lico Uganda Database Design</h3>
+            <p class="card-desc">A relational database design for a Ugandan business scenario, including full ERD, normalization to 3NF, and SQL schema implementation.</p>
+            <div class="card-stack">
+              <span class="stack-pill">PostgreSQL</span>
+              <span class="stack-pill">ERD</span>
+              <span class="stack-pill">3NF</span>
+              <span class="stack-pill">SQL</span>
+            </div>
+            <div class="card-links">
+              <a href="#" class="card-link primary">View Report</a>
+              <a href="#" class="card-link">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="project-card fade-in" data-category="systems">
+          <div class="card-top purple">⚙️</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-type">Systems</span>
+              <span class="card-year">2024</span>
+            </div>
+            <h3 class="card-title">OS Scheduling Simulator</h3>
+            <p class="card-desc">A Python-based CPU scheduling simulator implementing Round Robin, FCFS, SJF, and Priority algorithms with visual Gantt chart output.</p>
+            <div class="card-stack">
+              <span class="stack-pill">Python</span>
+              <span class="stack-pill">Matplotlib</span>
+              <span class="stack-pill">OS Concepts</span>
+            </div>
+            <div class="card-links">
+              <a href="#" class="card-link primary">View Demo</a>
+              <a href="#" class="card-link">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 5 -->
+        <div class="project-card fade-in" data-category="systems database">
+          <div class="card-top green">📊</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-type">Systems</span>
+              <span class="card-type">Database</span>
+              <span class="card-year">2024</span>
+            </div>
+            <h3 class="card-title">DSA Algorithm Visualizer</h3>
+            <p class="card-desc">An interactive web tool visualizing sorting algorithms, BST operations, Dijkstra's shortest path, and graph traversals (BFS/DFS) step by step.</p>
+            <div class="card-stack">
+              <span class="stack-pill">JavaScript</span>
+              <span class="stack-pill">HTML Canvas</span>
+              <span class="stack-pill">CSS Animations</span>
+            </div>
+            <div class="card-links">
+              <a href="#" class="card-link primary">Try It</a>
+              <a href="#" class="card-link">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 6 -->
+        <div class="project-card fade-in" data-category="web">
+          <div class="card-top red">🌐</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-type">Web App</span>
+              <span class="card-year">2024</span>
+            </div>
+            <h3 class="card-title">Personal Portfolio Website</h3>
+            <p class="card-desc">This responsive, multi-page portfolio site built with pure HTML, CSS, and JavaScript. Features scroll animations, mobile-first design, and gold/navy professional theme.</p>
+            <div class="card-stack">
+              <span class="stack-pill">HTML5</span>
+              <span class="stack-pill">CSS3</span>
+              <span class="stack-pill">Vanilla JS</span>
+              <span class="stack-pill">Responsive</span>
+            </div>
+            <div class="card-links">
+              <a href="index.html" class="card-link primary">View Site</a>
+              <a href="#" class="card-link">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /projects-grid -->
+
+      <div style="text-align:center; padding: 2rem 0;">
+        <a href="index.html#contact" class="btn btn-outline">Work with me →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="footer-logo">N<span class="gold">A</span></span>
+      <p>© 2025 Nshemerirwe Allen · Kampala, Uganda 🇺🇬</p>
+      <a href="#" class="back-top">↑ Top</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    // ─── Project Filter ───
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+        cards.forEach(card => {
+          const cats = card.getAttribute('data-category') || '';
+          if (filter === 'all' || cats.includes(filter)) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
